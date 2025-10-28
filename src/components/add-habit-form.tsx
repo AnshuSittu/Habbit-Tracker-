@@ -5,7 +5,9 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -32,63 +34,91 @@ function AddHabitForm() {
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{
-        display: "grid",
-        gap: { xs: 2, md: 3 },
-        gridTemplateColumns: { xs: "1fr", md: "2fr 1fr auto" },
-        alignItems: "center",
-        backgroundColor: "rgba(247, 248, 255, 0.9)",
-        borderRadius: 3,
-        p: { xs: 2.5, md: 3 },
-        border: "1px solid",
-        borderColor: "rgba(79,70,229,0.16)",
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.6)",
-      }}
-    >
-      <TextField
-        label="Habit name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="e.g. Morning run"
-        fullWidth
-        variant="outlined"
-        size="small"
-      />
-      <FormControl fullWidth size="small">
-        <InputLabel id="habit-frequency-label">Frequency</InputLabel>
-        <Select
-          labelId="habit-frequency-label"
-          label="Frequency"
-          value={frequency}
-          onChange={(e) => setFrequency(e.target.value as "daily" | "weekly")}
-        >
-          <MenuItem value="daily">Daily</MenuItem>
-          <MenuItem value="weekly">Weekly</MenuItem>
-        </Select>
-      </FormControl>
-      <Button
-        type="submit"
-        variant="contained"
+    <Stack spacing={2.5}>
+      <Box>
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          New habit
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+          Set up the next routine you want to nurture.
+        </Typography>
+      </Box>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
         sx={{
-          minHeight: { xs: 48, md: 40 },
-          px: { xs: 3.5, md: 4 },
-          borderRadius: 2,
-          fontWeight: 600,
-          textTransform: "none",
-          background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
-          boxShadow: "0 10px 24px rgba(79, 70, 229, 0.38)",
-          "&:hover": {
-            background: "linear-gradient(135deg, #4338ca 0%, #6d28d9 100%)",
-            boxShadow: "0 12px 28px rgba(79, 70, 229, 0.45)",
+          display: "grid",
+          gap: { xs: 2, md: 2.5 },
+          gridTemplateColumns: {
+            xs: "1fr",
+            md: "minmax(0, 1fr) 220px auto",
           },
+          alignItems: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          borderRadius: 2.5,
+          border: "1px solid",
+          borderColor: "divider",
+          boxShadow: "0 12px 28px rgba(15, 23, 42, 0.08)",
+          p: { xs: 2, md: 2.5 },
         }}
       >
-        Add Habit
-      </Button>
-    </Box>
+        <TextField
+          label="Habit name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="e.g. Morning run"
+          fullWidth
+          variant="outlined"
+          size="medium"
+          sx={{
+            backgroundColor: "background.paper",
+            borderRadius: 2,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 2,
+              minHeight: 56,
+            },
+          }}
+        />
+        <FormControl
+          fullWidth
+          size="medium"
+          sx={{
+            minWidth: { md: 190 },
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 2,
+              minHeight: 56,
+            },
+          }}
+        >
+          <InputLabel id="habit-frequency-label">Frequency</InputLabel>
+          <Select
+            labelId="habit-frequency-label"
+            label="Frequency"
+            value={frequency}
+            onChange={(e) => setFrequency(e.target.value as "daily" | "weekly")}
+          >
+            <MenuItem value="daily">Daily</MenuItem>
+            <MenuItem value="weekly">Weekly</MenuItem>
+          </Select>
+        </FormControl>
+        <Button
+          type="submit"
+          variant="contained"
+          size="large"
+          sx={{
+            width: { xs: "100%", md: "auto" },
+            px: { xs: 3, md: 5 },
+            minHeight: 56,
+            borderRadius: 2.5,
+            fontWeight: 600,
+            textTransform: "none",
+            boxShadow: "none",
+          }}
+        >
+          Add Habit
+        </Button>
+      </Box>
+    </Stack>
   );
 }
 

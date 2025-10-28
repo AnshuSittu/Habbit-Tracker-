@@ -1,10 +1,23 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store/store";
-import { Box, Paper, Grid, Typography, Button, Chip, Stack } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  Paper,
+  Divider,
+  Grid,
+  Typography,
+  Button,
+  Chip,
+  Stack,
+} from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
+
 
 const HabitList: React.FC = () => {
   const habits = useSelector((state: RootState) => state.habits.habits);
@@ -13,7 +26,6 @@ const HabitList: React.FC = () => {
     <Box
       component="section"
       sx={{
-        mt: 2,
         display: "flex",
         flexDirection: "column",
         gap: 3,
@@ -27,9 +39,9 @@ const HabitList: React.FC = () => {
             textAlign: "center",
             borderRadius: 3,
             border: "1px dashed",
-            borderColor: "rgba(79,70,229,0.2)",
+            borderColor: alpha("#7c3aed", 0.25),
+            backgroundColor: "background.default",
             color: "text.secondary",
-            background: "linear-gradient(150deg, #f8fafc 0%, #eef2ff 100%)",
           }}
         >
           <Typography variant="h6" gutterBottom>
@@ -42,12 +54,22 @@ const HabitList: React.FC = () => {
       ) : (
         <Grid
           container
-          spacing={{ xs: 2.5, md: 3.5 }}
-          rowSpacing={{ xs: 3, md: 4 }}
+          spacing={{ xs: 3, md: 4 }}
+          rowSpacing={{ xs: 3.5, md: 4 }}
+          sx={{ alignItems: "stretch" }}
         >
           {habits.map((habit) => {
             const isCompletedToday = habit.completedDates.includes(today);
             const totalCheckIns = habit.completedDates.length;
+            const lastCompleted =
+              habit.completedDates.length > 0
+                ? new Date(
+                    habit.completedDates[habit.completedDates.length - 1]
+                  ).toLocaleDateString(undefined, {
+                    month: "short",
+                    day: "numeric",
+                  })
+                : "Not yet";
 
             return (
               <Grid
@@ -55,70 +77,133 @@ const HabitList: React.FC = () => {
                 key={habit.id}
                 sx={{ display: "flex" }}
               >
-                <Paper
-                  elevation={3}
+                <Card
                   sx={{
-                    p: { xs: 3, md: 3.5 },
                     height: "100%",
                     borderRadius: 3,
                     display: "flex",
                     flexDirection: "column",
-                    gap: 2.5,
-                    position: "relative",
                     border: "1px solid",
-                    borderColor: alpha("#4f46e5", 0.08),
-                    background:
-                      "linear-gradient(165deg, rgba(255,255,255,0.97) 0%, rgba(237, 242, 255, 0.95) 100%)",
-                    boxShadow: "0 18px 40px rgba(15, 23, 42, 0.08)",
-                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                    borderColor: alpha("#0f172a", 0.08),
+                    backgroundColor: "rgba(255,255,255,0.95)",
+                    boxShadow: "0 20px 40px rgba(15, 23, 42, 0.12)",
+                    transition:
+                      "transform 0.18s ease-in-out, box-shadow 0.18s ease-in-out",
                     "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: "0 26px 48px rgba(79, 70, 229, 0.18)",
-                      zIndex: 2,
+                      transform: "translateY(-6px)",
+                      boxShadow: "0 28px 52px rgba(79, 70, 229, 0.24)",
                     },
                   }}
                 >
-                  <Box
+                  <CardContent
                     sx={{
                       display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-start",
-                      gap: 1,
+                      flexDirection: "column",
+                      gap: 2,
+                      p: { xs: 2.5, md: 3 },
+                      pb: 0,
                     }}
                   >
-                    <Box>
-                      <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                        {habit.name}
-                      </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        gap: 2,
+                      }}
+                    >
+                      <Box>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontWeight: 600,
+                            letterSpacing: "-0.01em",
+                            color: "text.primary",
+                          }}
+                        >
+                          {habit.name}
+                        </Typography>
+                        <Chip
+                          label={`${habit.frequency.charAt(0).toUpperCase()}${habit.frequency.slice(1)} habit`}
+                          size="small"
+                          variant="outlined"
+                          color="primary"
+                          sx={{
+                            mt: 1,
+                            fontWeight: 500,
+                            borderRadius: 2,
+                          }}
+                        />
+                      </Box>
+
                       <Chip
-                        label={`${habit.frequency.charAt(0).toUpperCase()}${habit.frequency.slice(1)} habit`}
+                        label={
+                          isCompletedToday ? "On track" : "Pending today"
+                        }
                         size="small"
-                        color="primary"
-                        variant="outlined"
-                        sx={{ mt: 1 }}
+                        sx={{
+                          fontWeight: 600,
+                          letterSpacing: "0.04em",
+                          textTransform: "uppercase",
+                          backgroundColor: isCompletedToday
+                            ? alpha("#16a34a", 0.12)
+                            : alpha("#1d4ed8", 0.12),
+                          color: isCompletedToday ? "#166534" : "#1d4ed8",
+                        }}
                       />
                     </Box>
 
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        fontWeight: 600,
-                        letterSpacing: "0.06em",
-                        color: "text.secondary",
-                      }}
+                    <Stack
+                      direction="row"
+                      spacing={3}
+                      sx={{ color: "text.secondary" }}
                     >
-                      {totalCheckIns} {totalCheckIns === 1 ? "check-in" : "check-ins"}
-                    </Typography>
-                  </Box>
+                      <Box>
+                        <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                          Check-ins
+                        </Typography>
+                        <Typography
+                          variant="subtitle2"
+                          sx={{ fontWeight: 600, color: "text.primary" }}
+                        >
+                          {totalCheckIns}
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                          Last marked
+                        </Typography>
+                        <Typography
+                          variant="subtitle2"
+                          sx={{ fontWeight: 600, color: "text.primary" }}
+                        >
+                          {lastCompleted}
+                        </Typography>
+                      </Box>
+                    </Stack>
 
-                  <Stack
-                    direction={{ xs: "column", sm: "row" }}
-                    spacing={1.5}
-                    sx={{ mt: "auto" }}
-                    alignItems="stretch"
+                    <Typography variant="body2" color="text.secondary">
+                      Stay consistent by checking in whenever you complete this
+                      habit.
+                    </Typography>
+                  </CardContent>
+
+                  <Divider sx={{ mt: 3, opacity: 0.3 }} />
+
+                  <CardActions
+                    sx={{
+                      display: "flex",
+                      gap: 1.2,
+                      flexWrap: "wrap",
+                      alignItems: "stretch",
+                      p: { xs: 2.5, md: 3 },
+                      pt: { xs: 2, md: 2.5 },
+                      mt: "auto",
+                    }}
                   >
                     <Button
                       variant="contained"
+                      color={isCompletedToday ? "success" : "primary"}
                       startIcon={<CheckCircleIcon />}
                       sx={{
                         flexGrow: 1,
@@ -126,17 +211,9 @@ const HabitList: React.FC = () => {
                         textTransform: "none",
                         fontWeight: 600,
                         borderRadius: 2,
-                        background: isCompletedToday
-                          ? "linear-gradient(135deg, #16a34a 0%, #22c55e 100%)"
-                          : "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
-                        boxShadow: isCompletedToday
-                          ? "0 14px 30px rgba(34, 197, 94, 0.32)"
-                          : "0 14px 30px rgba(79, 70, 229, 0.28)",
-                        "&:hover": {
-                          background: isCompletedToday
-                            ? "linear-gradient(135deg, #15803d 0%, #16a34a 100%)"
-                            : "linear-gradient(135deg, #4338ca 0%, #6d28d9 100%)",
-                        },
+                        boxShadow: "none",
+                        py: 1.1,
+                        px: 2.5,
                       }}
                     >
                       {isCompletedToday ? "Completed today" : "Mark completed"}
@@ -151,18 +228,17 @@ const HabitList: React.FC = () => {
                         textTransform: "none",
                         fontWeight: 600,
                         borderRadius: 2,
-                        borderWidth: 2,
+                        borderWidth: 1.5,
                         px: 2.5,
                         "&:hover": {
-                          borderWidth: 2,
                           backgroundColor: alpha("#ef4444", 0.08),
                         },
                       }}
                     >
                       Remove
                     </Button>
-                  </Stack>
-                </Paper>
+                  </CardActions>
+                </Card>
               </Grid>
             );
           })}
