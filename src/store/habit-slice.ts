@@ -32,6 +32,7 @@ const habitSlice = createSlice({
       };
       state.habits.push(newHabit);
     },
+    
   },
 });
 
